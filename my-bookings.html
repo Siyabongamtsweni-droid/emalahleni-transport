@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>My Bookings | MoveMate Emalahleni</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body{min-height:100vh}
+    .page{max-width:900px;margin:48px auto;padding:0 18px}
+    .panel{background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 8px 25px #1018270b}
+    .booking{border:1px solid #e4e7ec;border-radius:12px;padding:16px;margin:12px 0}
+    .booking h3{margin:0 0 10px;font:800 16px Manrope}
+    .meta{font-size:13px;color:#667085;line-height:1.7}
+    .status{display:inline-block;padding:5px 10px;border-radius:20px;background:#fff4d6;color:#805600;font-size:11px;font-weight:800;text-transform:capitalize}
+    .action{display:inline-block;margin:8px 10px 0 0;color:#8a5a00;font-weight:700;text-decoration:none}
+    .muted{color:#667085;font-size:13px}
+    .message{padding:14px;border-radius:10px;background:#f2f4f7;color:#344054}
+    button{border:0;border-radius:9px;background:#f5a900;padding:11px 16px;font-weight:800;cursor:pointer}
+    @media(max-width:520px){.page{margin:28px auto}.panel{padding:16px}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">M</span><span>MoveMate <small>EMALAHLENI</small></span></a>
+  <nav><a class="driver-link" href="index.html">Book transport</a></nav>
+</header>
+
+<main class="page">
+  <p class="eyebrow dark">CUSTOMER ACCOUNT</p>
+  <h1 style="font:800 clamp(28px,5vw,42px) Manrope;margin:0 0 8px">My bookings</h1>
+  <p class="muted">Your transport requests and their latest recorded status.</p>
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+      <div><strong id="account-email">Checking account...</strong><p class="muted">Only bookings belonging to your signed-in account are shown.</p></div>
+      <button id="signout-button" type="button">Log out</button>
+    </div>
+    <div id="bookings-message" class="message" role="status" aria-live="polite">Loading your bookings...</div>
+    <div id="bookings-list"></div>
+    <button id="refresh-button" type="button" style="margin-top:12px">Refresh bookings</button>
+  </section>
+  <a class="action" href="index.html">← Make another booking request</a>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+(() => {
+  const cfg = window.MOVEMATE_SUPABASE_CONFIG;
+  const db = window.supabase.createClient(cfg.url, cfg.key);
+  const message = document.getElementById("bookings-message");
+  const list = document.getElementById("bookings-list");
+
+  function safeText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    }[char]));
+  }
+
+  function prettyDate(value) {
+    if (!value) return "As soon as possible";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "Date to be confirmed" : date.toLocaleString("en-ZA");
+  }
+
+  async function loadBookings() {
+    message.textContent = "Loading your bookings...";
+    list.innerHTML = "";
+    const { data: authData, error: authError } = await db.auth.getUser();
+    const user = authData && authData.user;
+    if (authError || !user) {
+      message.textContent = "Please log in to view your bookings.";
+      document.getElementById("account-email").textContent = "Not logged in";
+      return;
+    }
+
+    document.getElementById("account-email").textContent = user.email || "Signed-in customer";
+    const { data, error } = await db
+      .from("bookings")
+      .select("id, service, pickup_text, dropoff_text, item_description, passenger_count, scheduled_for, status, created_at")
+      .eq("customer_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      message.textContent = "We could not load your bookings: " + error.message;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      message.textContent = "You do not have any booking requests yet.";
+      return;
+    }
+
+    message.textContent = data.length + " booking request(s) found.";
+    list.innerHTML = data.map(booking => {
+      const kind = booking.service === "passengers" ? "Passenger transport" : "Goods transport";
+      const extra = booking.service === "passengers"
+        ? (booking.passenger_count || "Not specified") + " passenger(s) — " + (booking.item_description || "Trip details not specified")
+        : (booking.item_description || "Item details not specified");
+      return `<article class="booking">
+        <h3>${safeText(kind)}</h3>
+        <span class="status">${safeText(booking.status.replaceAll("_", " "))}</span>
+        <p class="meta"><strong>Pickup:</strong> ${safeText(booking.pickup_text)}<br>
+        <strong>Drop-off:</strong> ${safeText(booking.dropoff_text)}<br>
+        <strong>Details:</strong> ${safeText(extra)}<br>
+        <strong>Requested for:</strong> ${safeText(prettyDate(booking.scheduled_for))}<br>
+        <strong>Submitted:</strong> ${safeText(prettyDate(booking.created_at))}<br>
+        <strong>Reference:</strong> ${safeText(booking.id)}</p>
+      </article>`;
+    }).join("");
+  }
+
+  document.getElementById("refresh-button").addEventListener("click", loadBookings);
+  document.getElementById("signout-button").addEventListener("click", async () => {
+    const { error } = await db.auth.signOut();
+    if (error) {
+      message.textContent = "Could not log out: " + error.message;
+      return;
+    }
+    window.location.href = "auth.html";
+  });
+
+  loadBookings();
+})();
+</script>
+</body>
+</html>
