@@ -63,4 +63,10 @@ document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click'
 document.getElementById('driver-form').addEventListener('submit',e=>{e.preventDefault();const profile={name:document.getElementById('driver-name').value.trim(),phone:document.getElementById('driver-phone').value.trim(),vehicle:document.getElementById('vehicle-type').value,registration:document.getElementById('vehicle-reg').value.trim(),passengers:Number(document.getElementById('passenger-capacity').value),load:document.getElementById('load-capacity').value.trim()};localStorage.setItem('movemate-demo-driver',JSON.stringify(profile));document.getElementById('profile-message').textContent='Demo profile saved on this device.';});
 render();
 </script>
-</body></html>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="driver-auth.js"></script>
+
+</body>
+</html>
