@@ -1,18 +1,22 @@
+
 // ======================================
-// MOVEMATE - SECURE DRIVER PORTAL
+// MOVEMATE - DRIVER PORTAL
+// Secure vehicle registration
 // ======================================
 
 const config = window.MOVEMATE_SUPABASE_CONFIG;
 
-const db = window.supabase.createClient(
-  config.url,
-  config.key
-);
+if (!config || !window.supabase) {
+  alert("MoveMate could not connect. Please refresh the page.");
+  throw new Error("Supabase configuration is missing.");
+}
+
+const db = window.supabase.createClient(config.url, config.key);
 
 const intro = document.querySelector(".intro");
 const grid = document.querySelector(".grid");
 const driverForm = document.getElementById("driver-form");
-const jobBoard = document.querySelectorAll(".grid .card")[1];
+const jobBoard = grid?.querySelectorAll(".card")[1];
 
 function showStatus(message, color = "#805500") {
   let box = document.getElementById("driver-auth-status");
@@ -31,7 +35,10 @@ function showStatus(message, color = "#805500") {
 }
 
 function addSignOutButton() {
+  if (document.getElementById("driver-signout")) return;
+
   const button = document.createElement("button");
+  button.id = "driver-signout";
   button.textContent = "Sign out";
   button.style.marginLeft = "12px";
 
@@ -63,55 +70,66 @@ async function startDriverPortal() {
     if (driverError) throw driverError;
 
     if (!driver) {
+      if (grid) grid.style.display = "none";
+
       showStatus(
-        "This account is not registered as a driver. Please apply using the driver registration option.",
+        "This account is not registered as a driver. Please register using the driver application option.",
         "#991b1b"
       );
-      grid.style.display = "none";
+
       addSignOutButton();
       return;
     }
 
     addSignOutButton();
 
-    if (driver.review_status !== "approved") {
-      grid.style.display = "none";
-
-      const messages = {
-        pending: "Your driver application is awaiting review. You will be able to register vehicles once your application is approved.",
-        rejected: "Your driver application was not approved. Please contact MoveMate support.",
-        suspended: "Your driver account is currently suspended. Please contact MoveMate support."
-      };
+    // Never allow rejected or suspended applicants to register vehicles.
+    if (
+      driver.review_status === "rejected" ||
+      driver.review_status === "suspended"
+    ) {
+      if (grid) grid.style.display = "none";
 
       showStatus(
-        messages[driver.review_status] ||
-        "Your driver account is not approved yet."
+        driver.review_status === "rejected"
+          ? "Your driver application was not approved. Please contact MoveMate support."
+          : "Your driver account is suspended. Please contact MoveMate support.",
+        "#991b1b"
       );
 
       return;
     }
 
-    if (!driver.licence_verified) {
-      grid.style.display = "none";
-      showStatus(
-        "Your driver application has been approved, but your licence verification is still outstanding. Please contact MoveMate support."
-      );
-      return;
-    }
-
-    showStatus(
-      "Your driver account is approved. You can now register your vehicle.",
-      "#166534"
-    );
-
-    // Hide the demonstration job board.
+    // Hide the fictional demonstration job board.
     if (jobBoard) jobBoard.style.display = "none";
 
-    const { data: profile } = await db
+    // Keep the registration form visible for pending applicants.
+    if (grid) grid.style.display = "grid";
+    if (driverForm) driverForm.style.display = "grid";
+
+    if (driver.review_status === "pending") {
+      showStatus(
+        "Your driver application is awaiting review. You may submit your vehicle details, but your vehicle will remain inactive until MoveMate completes the required checks."
+      );
+    } else if (!driver.licence_verified) {
+      showStatus(
+        "Your driver application is approved, but your driving licence still needs verification. You may submit vehicle details. Your vehicle will remain inactive."
+      );
+    } else {
+      showStatus(
+        "Your driver account is approved. You may register your vehicle. It will remain inactive until MoveMate completes the vehicle checks.",
+        "#166534"
+      );
+    }
+
+    // Load the driver's saved contact details.
+    const { data: profile, error: profileError } = await db
       .from("profiles")
       .select("full_name, phone")
       .eq("id", user.id)
       .maybeSingle();
+
+    if (profileError) throw profileError;
 
     if (profile) {
       document.getElementById("driver-name").value =
@@ -121,12 +139,15 @@ async function startDriverPortal() {
         profile.phone || "";
     }
 
-    // Prevent the old demonstration form from saving fake data.
+    // Stop the old demonstration form from saving fake information.
     driverForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       event.stopImmediatePropagation();
 
-      const submitButton = driverForm.querySelector("button[type='submit']");
+      const submitButton = driverForm.querySelector(
+        "button[type='submit']"
+      );
+
       submitButton.disabled = true;
       submitButton.textContent = "Saving vehicle...";
 
@@ -139,6 +160,16 @@ async function startDriverPortal() {
           .getElementById("load-capacity")
           .value.trim();
 
+        if (passengers < 0 || !Number.isFinite(passengers)) {
+          throw new Error("Enter a valid passenger capacity.");
+        }
+
+        if (passengers === 0 && !load) {
+          throw new Error(
+            "Enter a goods capacity or a passenger capacity."
+          );
+        }
+
         let service = "goods";
 
         if (passengers > 0 && load) {
@@ -149,7 +180,8 @@ async function startDriverPortal() {
 
         const vehicle = {
           owner_id: user.id,
-          vehicle_type: document.getElementById("vehicle-type").value,
+          vehicle_type: document
+            .getElementById("vehicle-type").value,
           registration_number: document
             .getElementById("vehicle-reg")
             .value.trim().toUpperCase(),
@@ -166,7 +198,7 @@ async function startDriverPortal() {
         if (saveError) throw saveError;
 
         showStatus(
-          "Vehicle details saved successfully. Your vehicle remains inactive until the required checks are completed.",
+          "Vehicle details saved successfully. Your vehicle is inactive and cannot receive bookings until MoveMate completes its checks.",
           "#166534"
         );
 
