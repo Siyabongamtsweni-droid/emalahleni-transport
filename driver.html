@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Driver Portal | MoveMate Emalahleni</title>
+<style>
+:root{--navy:#101827;--navy2:#17263b;--gold:#f5a900;--paper:#f3f5f7;--muted:#667085;--line:#e4e7ec;--green:#16834a;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--navy);font-family:Arial,sans-serif}.top{background:var(--navy);color:#fff;padding:17px max(5vw,18px);display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:800;font-size:19px}.brand small{display:block;color:#aeb8c7;font-size:9px;letter-spacing:2px;margin-top:4px}.top a{color:#fff;text-decoration:none;font-size:13px}.wrap{max-width:1050px;margin:auto;padding:28px 18px 60px}.intro{background:linear-gradient(120deg,var(--navy),var(--navy2));color:white;border-radius:18px;padding:25px;margin-bottom:20px}.eyebrow{color:#ffc342;font-size:10px;font-weight:800;letter-spacing:2px}.intro h1{font-size:clamp(28px,6vw,42px);margin:10px 0}.intro p{color:#c5cfdb;line-height:1.6;font-size:14px;max-width:650px}.notice{background:#fff8e8;border:1px solid #f4d58f;padding:12px 14px;border-radius:12px;color:#805500;font-size:12px;line-height:1.5;margin:16px 0}.grid{display:grid;grid-template-columns:minmax(280px,.9fr) 1.1fr;gap:18px;align-items:start}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 5px 20px #10182708}.card h2{font-size:20px;margin:0 0 16px}.form{display:grid;gap:12px}label{display:grid;gap:6px;font-size:12px;font-weight:700;color:#344054}input,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:12px;font-size:14px;background:#fff;color:var(--navy)}button{border:0;border-radius:10px;padding:12px 15px;background:var(--gold);color:#151515;font-weight:800;cursor:pointer}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tabs button{background:#eef1f5;color:#344054}.tabs button.active{background:var(--navy);color:white}.job{border:1px solid var(--line);border-radius:12px;padding:15px;margin:11px 0}.job-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.job h3{margin:0;font-size:15px}.pill{font-size:10px;font-weight:800;background:#eef1f5;border-radius:20px;padding:6px 9px}.job p{font-size:12px;color:var(--muted);line-height:1.55;margin:9px 0}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{font-size:11px;padding:9px 12px}.secondary{background:#eef1f5;color:#344054}.danger{background:#fff0ef;color:var(--red)}.empty{color:var(--muted);font-size:13px;line-height:1.6;padding:12px 0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}.stat{background:#f7f8fa;border-radius:10px;padding:12px}.stat b{font-size:22px;display:block}.stat span{font-size:10px;color:var(--muted)}.fine{font-size:10px;color:#98a2b3;line-height:1.5;margin-top:13px}.hidden{display:none!important}.success{color:var(--green);font-size:12px;font-weight:700}.footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.stats{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">MoveMate <small>DRIVER PORTAL • EMALAHLENI</small></div><a href="index.html">← Customer website</a></header>
+<main class="wrap">
+<section class="intro"><div class="eyebrow">MOVE WITH US</div><h1>Driver dashboard</h1><p>Register your vehicle, view transport opportunities and manage your trips around Witbank and Emalahleni.</p></section>
+<div class="notice"><b>Prototype notice:</b> This portal is a demonstration. Driver details and actions are saved only in this browser. No real customer requests are being sent, no driver is verified, and no payment or dispatch system is connected.</div>
+<div class="grid">
+<section class="card">
+<h2>Driver & vehicle registration</h2>
+<form id="driver-form" class="form">
+<label>Full name<input id="driver-name" required placeholder="Your full name"></label>
+<label>Mobile number<input id="driver-phone" type="tel" required placeholder="e.g. 082 000 0000"></label>
+<label>Vehicle type<select id="vehicle-type" required><option value="">Choose vehicle</option><option>Car</option><option>Bakkie</option><option>Panel van</option><option>Minibus taxi</option><option>Small truck</option><option>Large truck</option><option>Bus</option></select></label>
+<label>Vehicle registration number<input id="vehicle-reg" required placeholder="e.g. KZN 123 GP"></label>
+<label>Passenger capacity (enter 0 for goods-only)<input id="passenger-capacity" type="number" min="0" max="100" value="0" required></label>
+<label>Goods capacity / load description<input id="load-capacity" placeholder="e.g. 1.5 ton, 8-seater, 2.5m load bed"></label>
+<button type="submit">Save driver profile</button>
+<p id="profile-message" class="success" aria-live="polite"></p>
+</form>
+<p class="fine">For a real launch, registration must include identity checks, valid driving credentials, vehicle roadworthiness, insurance and applicable operating permits. Collect and protect personal information securely.</p>
+</section>
+<section class="card">
+<h2>Job board</h2>
+<div class="stats"><div class="stat"><b id="available-count">2</b><span>Demo requests</span></div><div class="stat"><b id="accepted-count">0</b><span>Accepted</span></div><div class="stat"><b id="completed-count">0</b><span>Completed</span></div></div>
+<div class="tabs"><button class="active" data-filter="available">Available</button><button data-filter="accepted">My trips</button><button data-filter="completed">Completed</button></div>
+<div id="jobs"></div>
+<p class="fine">The sample requests below are fictional examples for testing the interface only. They are not live customer bookings.</p>
+</section>
+</div>
+<div class="footer">MoveMate Emalahleni • Driver Portal • Prototype</div>
+</main>
+<script>
+const demoJobs=[
+{id:1,kind:'Goods moving',from:'Witbank CBD',to:'Tasbet Park',detail:'Bed, mattress and 4 boxes',vehicle:'Bakkie or panel van',fare:'Illustrative fare: R220',status:'available'},
+{id:2,kind:'Group transport',from:'eMalahleni Mall',to:'KwaGuqa',detail:'8 passengers • One-way',vehicle:'Minibus taxi',fare:'Illustrative fare: R180',status:'available'}
+];
+let jobs=JSON.parse(localStorage.getItem('movemate-demo-jobs')||'null')||demoJobs;
+let filter='available';
+function save(){localStorage.setItem('movemate-demo-jobs',JSON.stringify(jobs));render()}
+function render(){
+ const shown=jobs.filter(j=>j.status===filter);
+ document.getElementById('available-count').textContent=jobs.filter(j=>j.status==='available').length;
+ document.getElementById('accepted-count').textContent=jobs.filter(j=>j.status==='accepted'||j.status==='in progress').length;
+ document.getElementById('completed-count').textContent=jobs.filter(j=>j.status==='completed').length;
+ const root=document.getElementById('jobs');
+ if(!shown.length){root.innerHTML='<p class="empty">No requests in this section yet. Try another tab.</p>';return}
+ root.innerHTML=shown.map(j=>'<article class="job"><div class="job-top"><h3>'+j.kind+'</h3><span class="pill">'+j.status.toUpperCase()+'</span></div><p><b>Pickup:</b> '+j.from+'<br><b>Drop-off:</b> '+j.to+'<br><b>Load / passengers:</b> '+j.detail+'<br><b>Suggested vehicle:</b> '+j.vehicle+'<br><b>'+j.fare+'</b></p><div class="actions">'+(j.status==='available'?'<button onclick="changeJob('+j.id+',\\'accepted\\')">Accept request</button><button class="danger" onclick="changeJob('+j.id+',\\'rejected\\')">Reject</button>':'')+(j.status==='accepted'?'<button onclick="changeJob('+j.id+',\\'in progress\\')">Start trip</button>':'')+(j.status==='in progress'?'<button onclick="changeJob('+j.id+',\\'completed\\')">Complete trip</button>':'')+'</div></article>').join('');
+}
+function changeJob(id,status){jobs=jobs.map(j=>j.id===id?{...j,status}:j);save()}
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()}));
+document.getElementById('driver-form').addEventListener('submit',e=>{e.preventDefault();const profile={name:document.getElementById('driver-name').value.trim(),phone:document.getElementById('driver-phone').value.trim(),vehicle:document.getElementById('vehicle-type').value,registration:document.getElementById('vehicle-reg').value.trim(),passengers:Number(document.getElementById('passenger-capacity').value),load:document.getElementById('load-capacity').value.trim()};localStorage.setItem('movemate-demo-driver',JSON.stringify(profile));document.getElementById('profile-message').textContent='Demo profile saved on this device.';});
+render();
+</script>
+</body></html>
