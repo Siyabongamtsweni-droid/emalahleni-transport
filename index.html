@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>MoveMate Emalahleni | Moving & Group Transport</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">M</span>
+    <span>MoveMate <small>EMALAHLENI</small></span>
+  </a>
+  <nav>
+    <a class="driver-link" href="#how-it-works">How it works</a>
+    <a class="driver-link" href="my-bookings.html">My bookings</a>
+    <a class="driver-link" href="auth.html">Login / Register</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">YOUR TOWN. YOUR RIDE. YOUR MOVE.</p>
+      <h1>Move anything.<br><em>Move everyone.</em></h1>
+      <p class="intro">Request a vehicle for furniture, boxes, deliveries or group transport around Witbank and Emalahleni.</p>
+      <div class="trust"><span>✓ Local transport requests</span><span>✓ Goods and passengers</span><span>✓ Track your request status</span></div>
+    </div>
+
+    <div class="booking-card">
+      <div class="card-heading">
+        <div><p class="eyebrow dark">BOOK A SERVICE</p><h2>Where can we take you?</h2></div>
+        <span class="live-dot">● Booking requests</span>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Choose a service">
+        <button class="tab active" data-service="goods" type="button">📦 Move items</button>
+        <button class="tab" data-service="people" type="button">👥 Move people</button>
+      </div>
+
+      <form id="booking-form">
+        <label>Pickup location in Emalahleni
+          <input id="pickup" required maxlength="250" placeholder="e.g. Bankenveld, Witbank">
+        </label>
+        <label>Drop-off location
+          <input id="dropoff" required maxlength="250" placeholder="e.g. Tasbet Park, Witbank">
+        </label>
+
+        <div id="goods-fields">
+          <label>What are you moving?
+            <select id="load">
+              <option value="A few boxes / small items">A few boxes / small items</option>
+              <option value="Bed, mattress or appliances">Bed, mattress or appliances</option>
+              <option value="Couch, wardrobe or several items">Couch, wardrobe or several items</option>
+              <option value="Household move / many large items">Household move / many large items</option>
+            </select>
+          </label>
+          <label>Approximate load size
+            <select id="volume">
+              <option>Small load</option><option>Medium load</option>
+              <option>Large load</option><option>Very large load</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="people-fields" class="hidden">
+          <label>Number of passengers
+            <input id="passengers" type="number" min="1" max="100" value="8">
+          </label>
+          <label>Trip type
+            <select id="trip-type">
+              <option value="One-way trip">One-way trip</option>
+              <option value="Return trip">Return trip</option>
+              <option value="Event / multiple pickups">Event / multiple pickups</option>
+            </select>
+          </label>
+        </div>
+
+        <label>When do you need it?
+          <select id="when">
+            <option value="asap">As soon as possible</option>
+            <option value="later">Schedule for later</option>
+          </select>
+        </label>
+        <label id="schedule-label" class="hidden">Preferred date and time
+          <input id="scheduled-for" type="datetime-local">
+        </label>
+
+        <button class="primary full" id="booking-submit" type="submit">Send booking request <span>→</span></button>
+        <p class="fine-print">A request is not a confirmed trip. A driver and final price still need to be confirmed.</p>
+      </form>
+      <div id="booking-message" class="estimate hidden" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="services" id="how-it-works">
+    <div class="section-title"><p class="eyebrow dark">ONE PLATFORM, MANY JOURNEYS</p><h2>Transport that fits the job.</h2></div>
+    <div class="service-grid">
+      <article><div class="service-icon">🛋️</div><h3>Furniture moving</h3><p>Beds, couches, wardrobes, fridges and household items.</p></article>
+      <article><div class="service-icon">📦</div><h3>Boxes & deliveries</h3><p>Small loads, student moves, shop collections and deliveries.</p></article>
+      <article><div class="service-icon">🚚</div><h3>Van & truck transport</h3><p>Choose a vehicle based on the size and weight of your load.</p></article>
+      <article><div class="service-icon">🚐</div><h3>Group passenger trips</h3><p>Request suitable minibus or larger passenger transport.</p></article>
+    </div>
+  </section>
+
+  <section class="steps">
+    <p class="eyebrow">SIMPLE FROM START TO FINISH</p><h2>How it works</h2>
+    <div class="step-grid">
+      <div><b>01</b><h3>Tell us what moves</h3><p>Choose items or passengers and enter your locations.</p></div>
+      <div><b>02</b><h3>Send your request</h3><p>Your request is securely saved to your MoveMate account.</p></div>
+      <div><b>03</b><h3>Follow its status</h3><p>View your request under My bookings while driver matching is arranged.</p></div>
+    </div>
+  </section>
+</main>
+<footer><span>MoveMate Emalahleni</span><span>Witbank / Emalahleni, Mpumalanga</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
