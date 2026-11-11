@@ -199,30 +199,3 @@ loginForm.addEventListener("submit", async (event) => {
   }
 });
 
-// ======================================
-// CHECK EXISTING LOGIN SESSION
-// ======================================
-
-async function checkExistingSession() {
-  const { data, error } = await db.auth.getSession();
-
-  if (error || !data.session) {
-    return;
-  }
-
-  const user = data.session.user;
-
-  const { data: driver } = await db
-    .from("driver_profiles")
-    .select("user_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (driver) {
-    window.location.href = "driver.html";
-  } else {
-    window.location.href = "index.html";
-  }
-}
-
-checkExistingSession();
