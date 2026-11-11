@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101827">
+  <title>MoveMate Emalahleni | Account</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: #101827;
+      color: #172033;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      padding: 30px 24px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0 15px 45px rgba(0,0,0,0.25);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: #087f5b;
+      font-size: 28px;
+    }
+
+    .brand p {
+      color: #667085;
+      font-size: 14px;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    .subtitle {
+      color: #667085;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d0d5dd;
+      border-radius: 9px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #087f5b;
+      border-color: #087f5b;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 9px;
+      background: #087f5b;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .switch {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #667085;
+    }
+
+    .switch a {
+      color: #087f5b;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #auth-message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 22px;
+      text-align: center;
+      color: #667085;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <div class="brand">
+      <h1>MoveMate</h1>
+      <p>Emalahleni's transport marketplace</p>
+    </div>
+
+    <section id="signup-section">
+      <h2>Create your account</h2>
+      <p class="subtitle">
+        Join MoveMate to book transport or apply to become a driver.
+      </p>
+
+      <form id="signup-form">
+
+        <label for="full-name">Full name</label>
+        <input
+          id="full-name"
+          type="text"
+          placeholder="Enter your full name"
+          autocomplete="name"
+          required
+        >
+
+        <label for="phone">Phone number</label>
+        <input
+          id="phone"
+          type="tel"
+          placeholder="e.g. 0821234567"
+          autocomplete="tel"
+          required
+        >
+
+        <label for="account-type">Account type</label>
+        <select id="account-type" required>
+          <option value="customer">Customer – I need transport</option>
+          <option value="driver">Driver – I want to offer transport</option>
+        </select>
+
+        <label for="signup-email">Email address</label>
+        <input
+          id="signup-email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        >
+
+        <label for="signup-password">Password</label>
+        <input
+          id="signup-password"
+          type="password"
+          placeholder="At least 8 characters"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        >
+
+        <button id="signup-button" type="submit">
+          Create account
+        </button>
+      </form>
+
+      <p class="switch">
+        Already registered?
+        <a id="show-login" href="#">Log in</a>
+      </p>
+    </section>
+
+    <section id="login-section" class="hidden">
+      <h2>Welcome back</h2>
+      <p class="subtitle">Log in to your MoveMate account.</p>
+
+      <form id="login-form">
+        <label for="login-email">Email address</label>
+        <input
+          id="login-email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        >
+
+        <label for="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+        >
+
+        <button id="login-button" type="submit">
+          Log in
+        </button>
+      </form>
+
+      <p class="switch">
+        Don't have an account?
+        <a id="show-signup" href="#">Create one</a>
+      </p>
+    </section>
+
+    <div id="auth-message" role="status" aria-live="polite"></div>
+
+    <a class="back-link" href="index.html">
+      ← Back to MoveMate home
+    </a>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+</body>
+  </html>
